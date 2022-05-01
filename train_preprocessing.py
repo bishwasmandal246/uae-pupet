@@ -42,7 +42,7 @@ class TrainPreprocessing:
         return generator_optimizer1, private_optimizer1, utility_optimizer1
 
     def losses(self):
-        if self.generator == "VAE":
+        if self.generator == "VAE" or self.generator == "b-VAE":
             generator_loss1 = keras.losses.BinaryCrossentropy()
         else:
             generator_loss1 = keras.losses.MeanSquaredError()
