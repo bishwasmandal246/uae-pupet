@@ -115,7 +115,7 @@ if __name__ == '__main__':
     preprocess = TrainPreprocessing(main_dir, args.dataset, args.generator)
     x_train, x_test, private_train_true_labels, private_test_true_labels, utility_train_true_labels, utility_test_true_labels = preprocess.get_data()
     models = preprocess.get_model()
-    if args.generator == "VAE":
+    if args.generator == "VAE" or args.generator == "b-VAE":
         generator_model, encoder = models.generator()
     else:
         generator_model = models.generator()
