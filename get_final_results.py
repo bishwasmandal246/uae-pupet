@@ -42,7 +42,7 @@ def convex_hull(points):
     # Last point of each list is omitted because it is repeated at the beginning of the other list.
     return upper[:-1] # For our case we don't need lower hull so we only return the upper convex hull
 
-def upt_curve(UAE, AE, VAE, main_dir, dataset):
+def upt_curve(UAE, AE, VAE, bVAE, main_dir, dataset):
     # Guess to get highest accuracy by outputting same class which has highest frequency
     if dataset == "MNIST" or dataset =="USCensus":
         guess_x = 0.5 #private accuracy
@@ -62,20 +62,25 @@ def upt_curve(UAE, AE, VAE, main_dir, dataset):
     AE[2].append(guess_y)
     VAE[0].append(guess_x)
     VAE[2].append(guess_y)
+    bVAE[0].append(guess_x)
+    bVAE[2].append(guess_y)
     # Make tuples of X and Y points (For private and utility accuracies)
-    uae_tuples, ae_tuples, vae_tuples = [], [], []
+    uae_tuples, ae_tuples, vae_tuples, bvae_tuples = [], [], [], []
     for i in range(len(UAE[0])):
         uae_tuples.append((UAE[0][i], UAE[2][i]))
         ae_tuples.append((AE[0][i], AE[2][i]))
         vae_tuples.append((VAE[0][i], VAE[2][i]))
+        bvae_tuples.append((bVAE[0][i], bVAE[2][i]))
     # Get the upper convex hull points
     uae = convex_hull(uae_tuples)
     ae = convex_hull(ae_tuples)
     vae = convex_hull(vae_tuples)
+    bvae = convex_hull(bvae_tuples)
     # to draw joining lines to the best possible guess
     uae.append((guess_x, guess_y))
     ae.append((guess_x, guess_y))
     vae.append((guess_x, guess_y))
+    bvae.append((guess_x, guess_y))
     # matplotlip to draw utility-privacy curve (UPT-Curve)
     fig, ax1 = plt.subplots(figsize=(8,6))
     # Guess point
@@ -89,6 +94,9 @@ def upt_curve(UAE, AE, VAE, main_dir, dataset):
     # VAE
     ax1.scatter(VAE[0][:-1], VAE[2][:-1], color='C3', s = 80, label="VAE-PUPET", marker="o", alpha = 0.5)
     ax1.plot(*zip(*vae), color='C3', linestyle='-.', markersize=20)
+    # b-VAE
+    ax1.scatter(bVAE[0][:-1], bVAE[2][:-1], color='C4', s = 80, label="b-VAE-PUPET", marker="o", alpha = 0.5)
+    ax1.plot(*zip(*bvae), color='C4', linestyle='-.', markersize=20)
     
     ax1.grid()
     ax1.legend(fontsize = 14)
@@ -101,15 +109,16 @@ def upt_curve(UAE, AE, VAE, main_dir, dataset):
     fig.savefig(os.path.join(main_dir,"results","UPTCurves",str(dataset)+'-UPT-curve.png'), dpi = 500, bbox_inches='tight')
 
 if __name__ == "__main__":
-    main_dir = "PUPET-Official"
+    main_dir = "uae-pupet"
     # extract all infromation for the final results from "results" folder
     result_dir = os.path.join(main_dir, "results", args.dataset)
     # to store all results: Private and Utility accuracy and auroc
     UAE = [[], [], [], []]
     VAE = [[], [], [], []]
+    bVAE = [[], [], [], []]
     AE = [[], [], [], []]
     # iterators over generator
-    generators = ["UAE-", "VAE-", "AE-"]
+    generators = ["UAE-", "VAE-", "AE-", "b-VAE-"]
     # iterators for different metrics
     metrics = ["-private_acc.txt", "-private_auroc.txt", "-utility_acc.txt", "-utility_auroc.txt"]
     for generator in generators:
@@ -137,22 +146,24 @@ if __name__ == "__main__":
                     UAE[j].append(np.mean(np.array(scores)))
                 elif generator == "VAE-":
                     VAE[j].append(np.mean(np.array(scores)))
+                elif generator == "b-VAE-":
+                    bVAE[j].append(np.mean(np.array(scores)))
                 else:
                     AE[j].append(np.mean(np.array(scores)))
     
     print("Accuracy scores:\n")
     print(" -----------------------------------------------------------------------------------------------------------------------------")
-    print("|    Lambda_P    |   UAE private   |   UAE utility  |     AE private    |    AE utility   |   VAE private   |   VAE utility   |")
+    print("|    Lambda_P    |   UAE private   |   UAE utility  |     AE private    |    AE utility   |   b-VAE private |   b-VAE utility |")
     print(" -----------------------------------------------------------------------------------------------------------------------------")
     for i, j in enumerate(range(min_lambda_p, max_lambda_p, 10)):
-        print("|     {:3d}        |      {:.4f}     |      {:.4f}    |      {:.4f}       |      {:.4f}     |      {:.4f}     |      {:.4f}     |".format(j, UAE[0][i], UAE[2][i], AE[0][i], AE[2][i], VAE[0][i], VAE[2][i]))
+        print("|     {:3d}        |      {:.4f}     |      {:.4f}    |      {:.4f}       |      {:.4f}     |      {:.4f}     |      {:.4f}     |".format(j, UAE[0][i], UAE[2][i], AE[0][i], AE[2][i], bVAE[0][i], bVAE[2][i]))
     print(" -----------------------------------------------------------------------------------------------------------------------------")
     print("\nAUROC scores:\n")
     print(" -----------------------------------------------------------------------------------------------------------------------------")
-    print("|    Lambda_P    |   UAE private   |   UAE utility  |     AE private    |    AE utility   |   VAE private   |   VAE utility   |")
+    print("|    Lambda_P    |   UAE private   |   UAE utility  |     AE private    |    AE utility   |   b-VAE private |   b-VAE utility |")
     print(" -----------------------------------------------------------------------------------------------------------------------------")
     for i, j in enumerate(range(min_lambda_p, max_lambda_p, 10)):
-        print("|     {:3d}        |      {:.4f}     |      {:.4f}    |      {:.4f}       |      {:.4f}     |      {:.4f}     |      {:.4f}     |".format(j, UAE[1][i], UAE[3][i], AE[1][i], AE[3][i], VAE[1][i], VAE[3][i]))
+        print("|     {:3d}        |      {:.4f}     |      {:.4f}    |      {:.4f}       |      {:.4f}     |      {:.4f}     |      {:.4f}     |".format(j, UAE[1][i], UAE[3][i], AE[1][i], AE[3][i], bVAE[1][i], bVAE[3][i]))
     print(" -----------------------------------------------------------------------------------------------------------------------------")
     if draw_upt:
-        upt_curve(UAE,AE,VAE, main_dir, args.dataset)
+        upt_curve(UAE,AE,VAE,bVAE, main_dir, args.dataset)
