@@ -20,7 +20,7 @@ from tensorflow.keras.layers import Dense, Reshape, Lambda, Flatten, Conv2D, Max
 # Command line arguments
 parser = argparse.ArgumentParser(description='Implement PUPET')
 parser.add_argument('-d', '--dataset', type=str, metavar='', required=True, help = 'Dataset name: MNIST, FashionMNIST, UCIAdult or USCensus.')
-parser.add_argument('-g', '--generator', type=str, metavar='', required=True, help = 'Generator name: UAE or AE or VAE or b-VAE.')
+parser.add_argument('-g', '--generator', type=str, metavar='', required=True, help = 'Generator name: UAE, or AE, or VAE, or b-VAE.')
 parser.add_argument('-e', '--epochs', type=int, metavar='', default = 40, help = 'Default epochs: 40')
 parser.add_argument('-p', '--lambda_p', type = int, metavar='', required = True, help = "Favorable range: 0 to 100. Value only used when overwrite is true.")
 parser.add_argument('-o', '--lambda_p_overwrite', type = str, metavar='', required = True, help = 'Accepts "true" or "false". Lambda_p value mentioned above only effective when overwrite = true.')
