@@ -20,7 +20,7 @@ from tensorflow.keras.layers import Dense, Reshape, Lambda, Flatten, Conv2D, Max
 # Command line arguments
 parser = argparse.ArgumentParser(description='Implement PUPET')
 parser.add_argument('-d', '--dataset', type=str, metavar='', required=True, help = 'Dataset name: MNIST, FashionMNIST, UCIAdult or USCensus.')
-parser.add_argument('-g', '--generator', type=str, metavar='', required=True, help = 'Generator name: UAE or AE or VAE.')
+parser.add_argument('-g', '--generator', type=str, metavar='', required=True, help = 'Generator name: UAE or AE or VAE or b-VAE.')
 parser.add_argument('-e', '--epochs', type=int, metavar='', default = 40, help = 'Default epochs: 40')
 parser.add_argument('-p', '--lambda_p', type = int, metavar='', required = True, help = "Favorable range: 0 to 100. Value only used when overwrite is true.")
 parser.add_argument('-o', '--lambda_p_overwrite', type = str, metavar='', required = True, help = 'Accepts "true" or "false". Lambda_p value mentioned above only effective when overwrite = true.')
@@ -43,13 +43,17 @@ def train_step(train_dataset, test_dataset, lambda_p, lambda_u, original_dim, ge
         generator_predicted = generator_model(x_train1)
         initial_loss = generator_loss(x_train1, generator_predicted)
         initial_loss *= original_dim
-        if generator_type == "VAE":
+        if generator_type == "VAE" or generator_type == "b-VAE":
             mean = encoder(x_train1)[0]
             log_sigma = encoder(x_train1)[1]
             kl_loss = 1 + log_sigma - K.square(mean) - K.exp(log_sigma)
             kl_loss = K.sum(kl_loss, axis=-1)
             kl_loss *= -0.5
-            initial_loss =  K.mean(initial_loss +  kl_loss)
+            if generator_type == "VAE":
+                beta = 1
+            elif generator_type == "b-VAE":
+                beta = 2
+            initial_loss =  K.mean(initial_loss + (beta * kl_loss))
         final_loss = initial_loss + (lambda_u * u1_loss) - (lambda_p * p1_loss)
 
     # For validation or test data
@@ -60,13 +64,17 @@ def train_step(train_dataset, test_dataset, lambda_p, lambda_u, original_dim, ge
     generator_predicted_test = generator_model(x_test1)
     initial_loss_test = generator_loss(x_test1, generator_predicted_test)
     initial_loss_test *= original_dim
-    if generator_type == "VAE":
+    if generator_type == "VAE" or generator_type == "b-VAE":
         mean_test = encoder(x_test1)[0]
         log_sigma_test = encoder(x_test1)[1]
         kl_loss_test = 1 + log_sigma_test - K.square(mean_test) - K.exp(log_sigma_test)
         kl_loss_test = K.sum(kl_loss_test, axis=-1)
         kl_loss_test *= -0.5
-        initial_loss_test =  K.mean(initial_loss_test +  kl_loss_test)
+        if generator_type == "VAE":
+            beta = 1
+        elif generator_type == "b-VAE":
+            beta = 2
+        initial_loss_test =  K.mean(initial_loss_test + (beta * kl_loss_test))
     final_loss_test = initial_loss_test + (lambda_u * u1_loss_test) - (lambda_p * p1_loss_test)
 
     # back propagation and update generator parameters
