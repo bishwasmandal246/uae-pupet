@@ -20,7 +20,7 @@ from sklearn.metrics import roc_auc_score
 
 # Command line arguments
 parser = argparse.ArgumentParser(description='Implement Data type aware - PUPET')
-parser.add_argument('-g', '--generator', type=str, metavar='', required=True, help = 'Generator name: UAE or AE or VAE.')
+parser.add_argument('-g', '--generator', type=str, metavar='', required=True, help = 'Generator name: UAE or AE or VAE or b-VAE.')
 parser.add_argument('-e', '--epochs', type=int, metavar='', default = 100, help = 'Default epochs: 100')
 parser.add_argument('-p', '--lambda_p', type = int, metavar='', default = 10, help = "Lambda_P value. Suggested Range -> (0,10)")
 args = parser.parse_args()
@@ -79,7 +79,7 @@ class UCIAdult(Sampling):
             y = Dense(dimension)(h)
             model = keras.Model(inputs, y)
         else:
-            #returns VAE model incase if the model is not UAE or VAE
+            #returns VAE or b-VAE model
             y_mean = Dense(dimension)(h)
             y_sigma = Dense(dimension)(h)
             y = Lambda(self.vae_encoder_sampling)((y_mean, y_sigma, dimension))
@@ -111,7 +111,7 @@ class UCIAdult(Sampling):
             outputs = decoder(encoder(inputs))
             return keras.Model(inputs, outputs)
         else:
-            #return VAE
+            #return VAE or b-VAE model
             outputs = decoder(encoder(inputs)[2])
             return keras.Model(inputs, outputs), encoder
 
@@ -152,7 +152,7 @@ class TrainPreprocessing:
         return generator_optimizer1, private_optimizer1, utility_optimizer1
 
     def losses(self):
-        if self.generator == "VAE":
+        if self.generator == "VAE" or self.generator == "b-VAE":
             gen_loss1 = keras.losses.BinaryCrossentropy()
         else:
             gen_loss1 = keras.losses.MeanSquaredError()
@@ -185,13 +185,17 @@ def train_step(train_dataset, test_dataset, lambda_p, lambda_u, generator_type):
         u1_loss = utility_loss(uti_train1, utility_predicted)
         initial_loss = gen_loss_1(x_train1, data) * 102
 
-        if generator_type == "VAE":
+        if generator_type == "VAE" or generator_type == "b-VAE":
             mean = encoder(x_train1)[0]
             log_sigma = encoder(x_train1)[1]
             kl_loss = 1 + log_sigma - K.square(mean) - K.exp(log_sigma)
             kl_loss = K.sum(kl_loss, axis=-1)
             kl_loss *= -0.5
-            initial_loss =  K.mean(initial_loss +  kl_loss)
+            if generator_type == "VAE":
+                beta = 1
+            elif generator_type == "b-VAE":
+                beta = 2
+            initial_loss =  K.mean(initial_loss +  (beta * kl_loss))
         final_loss = (initial_loss) + (lambda_u * u1_loss) - (lambda_p * p1_loss)
 
     # For validation or test dataset
@@ -203,13 +207,17 @@ def train_step(train_dataset, test_dataset, lambda_p, lambda_u, generator_type):
     initial_loss_test = gen_loss_1(x_test1, data_test) * 102
 
 
-    if generator_type == "VAE":
+    if generator_type == "VAE" or generator_type == "b-VAE":
         mean = encoder(x_test1)[0]
         log_sigma = encoder(x_test1)[1]
         kl_loss = 1 + log_sigma - K.square(mean) - K.exp(log_sigma)
         kl_loss = K.sum(kl_loss, axis=-1)
         kl_loss *= -0.5
-        initial_loss_test =  K.mean(initial_loss_test +  kl_loss)
+        if generator_type == "VAE":
+            beta = 1
+        elif generator_type == "b-VAE":
+            beta = 2
+        initial_loss_test =  K.mean(initial_loss_test +  (beta * kl_loss))
     final_loss_test = (initial_loss_test)  + (lambda_u * u1_loss_test) - (lambda_p * p1_loss_test)
 
 
@@ -255,7 +263,7 @@ if __name__ == "__main__":
     dataset = Dataset()
     x_train, x_test, private_train_true_labels, private_test_true_labels, utility_train_true_labels, utility_test_true_labels = dataset.get_data(main_dir)
     models = UCIAdult(args.generator)
-    if args.generator == "VAE":
+    if args.generator == "VAE" or args.generator == "b-VAE":
         generator_model, encoder = models.generator()
     else:
         generator_model = models.generator()
