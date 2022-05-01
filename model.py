@@ -57,7 +57,7 @@ class MNIST(Sampling):
             y = Dense(self.latent_dim)(h)
             encoder = keras.Model(inputs, y)
         else:
-            #returns VAE model incase if the model is not UAE or VAE
+            #returns VAE or beta-VAE model
             y_mean = Dense(self.latent_dim)(h)
             y_sigma = Dense(self.latent_dim)(h)
             y = Lambda(self.vae_encoder_sampling)((y_mean, y_sigma, self.latent_dim))
@@ -79,7 +79,7 @@ class MNIST(Sampling):
             outputs = decoder(encoder(inputs))
             return keras.Model(inputs, outputs)
         else:
-            #return VAE
+            #returns VAE or beta-VAE model
             outputs = decoder(encoder(inputs)[2])
             return keras.Model(inputs, outputs), encoder
 
@@ -148,7 +148,7 @@ class FashionMNIST(Sampling):
             y = Dense(self.latent_dim)(h)
             encoder = keras.Model(inputs, y)
         else:
-            #returns VAE model incase if the model is not UAE or VAE
+            #returns VAE or beta-VAE model
             y_mean = Dense(self.latent_dim)(h)
             y_sigma = Dense(self.latent_dim)(h)
             y = Lambda(self.vae_encoder_sampling)((y_mean, y_sigma, self.latent_dim))
@@ -170,7 +170,7 @@ class FashionMNIST(Sampling):
             outputs = decoder(encoder(inputs))
             return keras.Model(inputs, outputs)
         else:
-            #return VAE
+            #returns VAE or beta-VAE model
             outputs = decoder(encoder(inputs)[2])
             return keras.Model(inputs, outputs), encoder
 
@@ -259,7 +259,7 @@ class UCIAdult(Sampling):
             y = Dense(self.latent_dim)(h)
             encoder = keras.Model(inputs, y)
         else:
-            #returns VAE model incase if the model is not UAE or VAE
+            #returns VAE or beta-VAE model
             y_mean = Dense(self.latent_dim)(h)
             y_sigma = Dense(self.latent_dim)(h)
             y = Lambda(self.vae_encoder_sampling)((y_mean, y_sigma, self.latent_dim))
@@ -278,7 +278,7 @@ class UCIAdult(Sampling):
             outputs = decoder(encoder(inputs))
             return keras.Model(inputs, outputs)
         else:
-            #return VAE
+            #returns VAE or beta-VAE model
             outputs = decoder(encoder(inputs)[2])
             return keras.Model(inputs, outputs), encoder
 
@@ -332,7 +332,7 @@ class USCensus(Sampling):
             y = Dense(self.latent_dim)(h)
             encoder = keras.Model(inputs, y)
         else:
-            #returns VAE model incase if the model is not UAE or VAE
+            #returns VAE or beta-VAE model
             y_mean = Dense(self.latent_dim)(h)
             y_sigma = Dense(self.latent_dim)(h)
             y = Lambda(self.vae_encoder_sampling)((y_mean, y_sigma, self.latent_dim))
@@ -351,7 +351,7 @@ class USCensus(Sampling):
             outputs = decoder(encoder(inputs))
             return keras.Model(inputs, outputs)
         else:
-            #return VAE
+            #returns VAE or beta-VAE model
             outputs = decoder(encoder(inputs)[2])
             return keras.Model(inputs, outputs), encoder
 
