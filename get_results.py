@@ -22,8 +22,9 @@ class Results:
         private_models.append(keras.models.load_model(os.path.join(self.main_dir, "adversaries_and_utility",self.dataset,'weak-adversary')))
         utility_models.append(keras.models.load_model(os.path.join(self.main_dir, "adversaries_and_utility",self.dataset,'weak-utility')))
         # test under strong adversary and utility provider
-        private_models.append(keras.models.load_model(os.path.join(self.main_dir, "adversaries_and_utility",self.dataset,str.lower(self.gen_name)+'-strong-adversary')))
-        utility_models.append(keras.models.load_model(os.path.join(self.main_dir, "adversaries_and_utility",self.dataset,str.lower(self.gen_name)+'-strong-utility')))
+        if self.gen_name != "b-VAE":
+            private_models.append(keras.models.load_model(os.path.join(self.main_dir, "adversaries_and_utility",self.dataset,str.lower(self.gen_name)+'-strong-adversary')))
+            utility_models.append(keras.models.load_model(os.path.join(self.main_dir, "adversaries_and_utility",self.dataset,str.lower(self.gen_name)+'-strong-utility')))
         # adversary and utility which was dynamically trained during the recent optimization
         private_models.append(self.a_p)
         utility_models.append(self.a_u)
