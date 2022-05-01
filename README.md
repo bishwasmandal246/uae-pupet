@@ -97,6 +97,14 @@ Fig.1 - Original v/s Privatized MNIST image
 Fig.2 -  Original v/s Privatized Fashion MNIST image
 </p>
 
+## Latent Variable Visualisation
+<p align = "center">
+<img src = "latent.gif", width = 400>
+</p>
+Fig. 3 Visualisation of latent variable before and after the privacy mechanism (UAE-PUPET) for MNIST dataset when the dimension of latent variable = 2. 
+<p align = "center">
+</p>
+
 ## UPT Curves
 Lines in the plot refer to the upper convex hull points. We focus on those points because, ideally, we don't want points which fall in shadow region. (Interpretation: Points lying on north-west regions are favorable.)
 
@@ -104,7 +112,7 @@ Lines in the plot refer to the upper convex hull points. We focus on those point
 <img src = "results/UPTCurves/UPT.png">
 </p>
 <p align = "center">
-Fig.3 - UPT curves: For all experiments consisting data-type-ignorant conditions. Each point is the mean of 25 experiments for a particular lambda p value.
+Fig.4 - UPT curves: For all experiments consisting data-type-ignorant conditions. Each point is the mean of 25 experiments for a particular lambda p value.
 </p>
 
 ## Loss Curves
@@ -112,7 +120,7 @@ Fig.3 - UPT curves: For all experiments consisting data-type-ignorant conditions
 <img src = "results/LossCurves/MNIST_LossCurves.png">
 </p>
 <p align = "center">
-Fig.4 - Loss Curves for MNIST dataset. Here we only show the values of privacy requirement from 0 to 30. Our actual experiments took over a range of (0,100).
+Fig.5 - Loss Curves for MNIST dataset. Here we only show the values of privacy requirement from 0 to 30. Our actual experiments took over a range of (0,100).
 </p>
 
 ---
