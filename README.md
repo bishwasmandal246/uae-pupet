@@ -101,7 +101,7 @@ Fig.2 -  Original v/s Privatized Fashion MNIST image
 <p align = "center">
 <img src = "latent.gif", width = 400>
 </p>
-Fig. 3 Visualisation of latent variable before and after the privacy mechanism (UAE-PUPET) for MNIST dataset when the dimension of latent variable = 2. 
+Fig. 3 Visualisation of latent variable before and after the privacy mechanism (UAE-PUPET) for MNIST dataset when the dimension of latent variable = 2. Note that we don't have a closed structure because we don't enforce our latent variable to be gaussian.
 <p align = "center">
 </p>
 
