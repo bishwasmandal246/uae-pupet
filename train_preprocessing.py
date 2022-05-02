@@ -43,6 +43,7 @@ class TrainPreprocessing:
 
     def losses(self):
         if self.generator == "VAE" or self.generator == "b-VAE":
+            #Change as per the dataset and requirements
             generator_loss1 = keras.losses.BinaryCrossentropy()
         else:
             generator_loss1 = keras.losses.MeanSquaredError()
