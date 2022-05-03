@@ -111,8 +111,8 @@ Lines in the plot refer to the upper convex hull points. We focus on those point
 <p align = "center">
 <img src = "results/UPTCurves/UPT.png">
 </p>
-<p align = "center">
 Fig.4 - UPT curves: For all experiments consisting data-type-ignorant conditions. Each point is the mean of 25 experiments for a particular lambda p value.
+<p align = "center">
 </p>
 
 ## Loss Curves
