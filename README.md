@@ -1,6 +1,6 @@
 # Uncertainty-Autoencoder-Based Privacy and Utility Preserving Data Type Conscious Transformation (UAE-PUPET)
 
-This repository provides the source code as described in the paper:
+This repository provides the source code as described in the paper: https://arxiv.org/abs/2205.01950
 
 ```
 Directory Structure:
@@ -127,5 +127,14 @@ Fig.5 - Loss Curves for MNIST dataset. Here we only show the values of privacy r
 ## Citation
 If you find UAE-PUPET useful in your research, please consider citing our paper:
 ```
-Bibtex citation will be available soon.
+@misc{https://doi.org/10.48550/arxiv.2205.01950,
+  doi = {10.48550/ARXIV.2205.01950},
+  url = {https://arxiv.org/abs/2205.01950},
+  author = {Mandal, Bishwas and Amariucai, George and Wei, Shuangqing},
+  keywords = {Machine Learning (cs.LG), Cryptography and Security (cs.CR), FOS: Computer and information sciences, FOS: Computer and information sciences},
+  title = {Uncertainty-Autoencoder-Based Privacy and Utility Preserving Data Type Conscious Transformation},
+  publisher = {arXiv},
+  year = {2022},
+  copyright = {Creative Commons Attribution 4.0 International}
+}
 ```
