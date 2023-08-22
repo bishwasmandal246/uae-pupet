@@ -1,6 +1,6 @@
 # Uncertainty-Autoencoder-Based Privacy and Utility Preserving Data Type Conscious Transformation (UAE-PUPET)
+<a href="https://arxiv.org/abs/2205.01950"><img src="https://img.shields.io/badge/arXiv-2205.01950-b31b1b.svg" height=22.5></a>
 
-This repository provides the source code as described in the paper: https://arxiv.org/abs/2205.01950
 
 ```
 Directory Structure:
